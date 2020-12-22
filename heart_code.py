@@ -11,9 +11,9 @@ df.columns = ['age', 'sex', 'cp', 'trestbps', 'chol',
 ### 1 = male, 0 = female
 
 
-################################## data preprocessing
-x=dataset.drop(['target'],axis=1)    
-x.head()
+################################## data preprocessing ##########################################################
+X=dataset.drop(['target'],axis=1)    
+X.head()
 
 
 y=dataset['target']
@@ -35,7 +35,7 @@ X_test = sc.transform(X_test)
 
 from sklearn.cluster import KMeans
 km=KMeans(n_clusters=2,random_state=0)
-km.fit(x_train,x_test)
+km.fit(X_train,X_test)
 
 from sklearn.metrics import confusion_matrix,accuracy_score
 cm= confusion_matrix(y_pred,y_test)
@@ -52,9 +52,13 @@ print(cs)
 
 
 #########################################   KNN  #############################################################
-from sklearn.svm import KNN
-classifier = KNN()
-classifier.fit(X_train, y_train)
+from sklearn.svm import knn
+print("Training K-Nearest Neighbors")
+knn = []
+for i in range(1, 21):
+    knn_classifier = KNeighborsClassifier(n_neighbors = i)
+    knn_classifier.fit(X_train, Y_train)
+    knn.append(knn_classifier.score(X_test, Y_test))
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
@@ -73,8 +77,8 @@ print('Accuracy for test set for knn = {}'.format((cm_test[0][0] + cm_test[1][1]
 
 
 #########################################   SVM   #############################################################
-from sklearn.svm import SVC
-classifier = SVC(kernel = 'rbf')
+from sklearn.svm import svm
+classifier = svm(kernel = 'rbf')
 classifier.fit(X_train, y_train)
 
 # Predicting the Test set results
@@ -93,11 +97,11 @@ print('Accuracy for test set for svm = {}'.format((cm_test[0][0] + cm_test[1][1]
 
 
 
-#########################################   Logistic Regression  #############################################################
+#########################################   DecisionTreeClassifier  #############################################################
 
-from sklearn.linear_model import LogisticRegression
-classifier = LogisticRegression()
-classifier.fit(X_train, y_train)
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(criterion='entropy', random_state=0)
+classifier.fit(x_train,y_train)
 
 # Predicting the Test set results
 y_pred = classifier.predict(X_test)
@@ -109,6 +113,6 @@ y_pred_train = classifier.predict(X_train)
 cm_train = confusion_matrix(y_pred_train, y_train)
 
 print()
-print('Accuracy for training set for Logistic Regression = {}'.format((cm_train[0][0] + cm_train[1][1])/len(y_train)))
-print('Accuracy for test set for Logistic Regression = {}'.format((cm_test[0][0] + cm_test[1][1])/len(y_test)))
+print('Accuracy for training set for DecisionTreeClassifier = {}'.format((cm_train[0][0] + cm_train[1][1])/len(y_train)))
+print('Accuracy for test set for DecisionTreeClassifier = {}'.format((cm_test[0][0] + cm_test[1][1])/len(y_test)))
 
